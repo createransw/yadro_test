@@ -3,8 +3,8 @@ module sequential_memory_testbench;
     logic reset;
     logic request_read;
     logic request_write;
-    logic [7:0] data_in;
-    logic [7:0] data_out;
+    logic [7 : 0] data_in;
+    logic [7 : 0] data_out;
 
     sequential_memory #(.DATA_WIDTH(8)) mem (
         .clk(clk),
@@ -20,12 +20,12 @@ module sequential_memory_testbench;
     initial begin
         // инициализация
         clk = 0;
-        reset = 1;
+        reset = 0;
         data_in = 0;
         request_write = 0;
         request_read = 0;
         #10;
-        reset = 0;
+        reset = 1;
 
         #10;
         request_read = 1;
@@ -47,7 +47,7 @@ module sequential_memory_testbench;
             end
         end
 
-        // чтение 16 чисел
+        // чтение оставшихся чисел
         #10;
         for (int i = 0; i < 8; i++) begin
             request_read = 1;

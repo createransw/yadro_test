@@ -22,13 +22,13 @@ module address_memory_testbench;
     initial begin
         // инициализация
         clk = 0;
-        reset = 1;
+        reset = 0;
         address_write = 0;
         data_in = 0;
         request_write = 0;
         address_read = 0;
         #10;
-        reset = 0;
+        reset = 1;
 
         // запись 16 чисел
         for (int i = 0; i < 16; i++) begin
