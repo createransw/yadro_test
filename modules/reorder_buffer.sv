@@ -111,6 +111,7 @@ module reorder_buffer #(
     // вывод данных
     always_ff @(posedge clk) begin
         if (request_read_order) begin
+            // удостоверимся, что чтение завершено
             request_read_order <= '0;
         end else if (wait_address) begin
             // нужен идентификатор следующего числа

@@ -46,7 +46,6 @@ module sequential_memory #(
     always_ff @(negedge request_read)
         ready_read <= '1;
 
-    assign data_out = memory[address_read];
     always_ff @(posedge clk) begin
         if (request_write && ready_write) begin
             // запись числа на текущий адрес
@@ -56,6 +55,7 @@ module sequential_memory #(
         end else if (request_read && ready_read && correct_read) begin
             // чтение с текущего адреса
             ready_read <= '0;
+            data_out = memory[address_read];
             address_read = address_read + 1;
         end
     end
