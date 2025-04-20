@@ -30,21 +30,25 @@ module sequential_memory #(
     logic ready_write;
     logic ready_read;
 
+    // reset
+    always_ff @(posedge reset) begin
+        // сброс адреса, состояния и выхода
+        address_write <= '0;
+        address_read <= '0;
+        ready_write <= '1;
+        ready_read <= '1;
+        data_out <= 'x;
+    end
+
     // если один запрос завершился, то можно переходить к следующему
     always_ff @(negedge request_write)
         ready_write <= '1;
     always_ff @(negedge request_read)
         ready_read <= '1;
 
-    always_ff @(posedge clk or posedge reset) begin
-        if (reset) begin
-            // сброс адреса, состояния и выхода
-            address_write <= '0;
-            address_read <= '0;
-            ready_write <= '1;
-            ready_read <= '1;
-            data_out <= 'x;
-        end else if (request_write && ready_write) begin
+    assign data_out = memory[address_read];
+    always_ff @(posedge clk) begin
+        if (request_write && ready_write) begin
             // запись числа на текущий адрес
             ready_write <= '0;
             memory[address_write] = data_in;
@@ -52,7 +56,6 @@ module sequential_memory #(
         end else if (request_read && ready_read && correct_read) begin
             // чтение с текущего адреса
             ready_read <= '0;
-            data_out = memory[address_read];
             address_read = address_read + 1;
         end
     end

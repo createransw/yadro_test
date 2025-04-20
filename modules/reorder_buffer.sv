@@ -110,7 +110,9 @@ module reorder_buffer #(
     assign s_rid_o = address;
     // вывод данных
     always_ff @(posedge clk) begin
-        if (wait_address) begin
+        if (request_read_order) begin
+            request_read_order <= '0;
+        end else if (wait_address) begin
             // нужен идентификатор следующего числа
             if (correct_read) begin
                 request_read_order <= '1;
@@ -123,7 +125,6 @@ module reorder_buffer #(
             wait_address <= '1;
         end else if (!$isunknown(s_rdata_o)) begin
             // появились данные на нужном адресе
-            request_read_order <= '0;
             s_rvalid_o <= '1;
             busy_out <= '1;
         end

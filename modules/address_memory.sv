@@ -18,21 +18,23 @@ module address_memory #(
     // готовность окружения к следующей записи
     logic ready_write;
 
+    // reset
+    always_ff @(posedge reset) begin
+        // сброс состояния и памяти
+        ready_write <= '1;
+        for (int i = 0; i < 16; i++)
+            memory[i] <= 'x;
+    end
+
     // если одна запись завершилась, то можно переходить к следующей
     always_ff @(negedge request_write)
         ready_write <= '1;
 
     // на выходе всегда число из нужного адреса
-    always_ff @(posedge clk)
-        data_out <= memory[address_read];
+    assign data_out = memory[address_read];
 
-    always_ff @(posedge clk or posedge reset) begin
-        if (reset) begin
-            // сброс состояния и памяти
-            ready_write <= '1;
-            for (int i = 0; i < 16; i++)
-                memory[i] <= 'x;
-        end else if (request_write && ready_write) begin
+    always_ff @(posedge clk) begin
+        if (request_write && ready_write) begin
             // запись нового числа на данный адрес
             ready_write <= '0;
             memory[address_write] <= data_in;
